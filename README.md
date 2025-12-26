@@ -4,7 +4,7 @@ It demonstrates how to build an AI agent from scratch using a Think → Act → 
 
 Features:
 Think → Act → Finish reasoning loop
-Multiple tools including calculator, GCD, LCM, random joke, random fact, unit conversion, and more
+Multiple tools including calculator, GCD, LCM, text_analysis, unit conversion, and more
 Local LLM inference using Ollama
 Flask backend with a simple HTML interface
 Extensible tool architecture
@@ -30,7 +30,7 @@ python main.py
 Example inputs:
 (25*4)/5
 GCD 12 18
-RANDOM_FACT
+TEXT_ANALYSIS
 
 How to Run (Web UI):
 Start Ollama
