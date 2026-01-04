@@ -1,51 +1,163 @@
-//AI Agent Framework//
-This project is a lightweight AI Agent Framework built in Python using Flask, Ollama, and a tool-based agent design. The agent interprets user goals, selects the appropriate tool, and produces results without directly solving tasks on its own.
-It demonstrates how to build an AI agent from scratch using a Think → Act → Finish loop, tool routing, memory handling, and a local LLM backend. The base structure and prompt logic were developed with guidance from ChatGPT and then customized and extended by the developer.
+AI Agent Framework – Intel Unnati Submission
 
-Features:
-Think → Act → Finish reasoning loop
-Multiple tools including calculator, GCD, LCM, text_analysis, unit conversion, and more
-Local LLM inference using Ollama
-Flask backend with a simple HTML interface
-Extensible tool architecture
-Basic memory support
+📌 Overview
+This project implements a custom AI Agent Framework from scratch using Python, Flask, and a local LLM (Ollama).
+The framework demonstrates how an autonomous AI agent can interpret a goal, reason about it, invoke tools, and produce results without directly solving tasks itself.
+The system follows a structured Think → Act → Finish agent loop and is designed to be extensible, explainable, and tool-driven, aligning with modern agent architectures used in industry.
+This project is developed as part of the Intel Unnati Industrial Training Program – Problem Statement #2: Build-Your-Own AI Agent Framework.
 
-Project Structure:
-ai-agent-framework
-app.py, main.py, config.py
-agent/, llm/, tools/, memory/, templates/
+🧠 Agent Architecture
+The agent operates with a controlled reasoning loop:
 
-Requirements:
-Python 3.10+
-Ollama with a model such as gemma, llama, or mistral
-Flask
+User Goal
+↓
+[ THINK ] → LLM decides next action
+↓
+[ ACT ] → Invoke selected tool
+↓
+[ OBSERVE ] → Store result in memory
+↓
+[ FINISH ] → Return final answer
 
-How to Run (CLI):
-Start Ollama
+Key Design Principles:
+
+* LLM does not solve tasks directly
+* All computation is delegated to tools
+* Agent reasoning is explicit and traceable
+* Each component is modular and replaceable
+
+🧩 Core Components
+1️⃣ Agent (agent/agent.py)
+
+* Orchestrates the Think → Act → Finish loop
+* Generates structured prompts for the LLM
+* Parses tool instructions safely
+* Maintains step control using MAX_STEPS
+
+2️⃣ Tool System (tools/tools.py)
+
+* Tools are independent Python functions
+* Registered via a centralized TOOLS dictionary
+* Examples: Calculator, Calendar, GCD/LCM, Unit Conversion, Text Analysis
+* Easy to extend by adding new tools
+
+3️⃣ Memory (memory/memory.py)
+
+* Stores agent observations between steps
+* Allows context accumulation
+* Demonstrates stateful agent behavior
+
+4️⃣ LLM Interface (llm/ollama_llm.py)
+
+* Uses Ollama for local inference
+* Model-agnostic (Gemma, LLaMA, Mistral supported)
+* Clean abstraction layer for future upgrades
+
+5️⃣ Web Interface (app.py + templates/index.html)
+
+* Flask backend
+* Simple UI to submit goals
+* Displays final result and reasoning trace
+* Designed for clarity, not demo theatrics
+
+📂 Project Structure
+ai-agent-framework/
+│
+├── app.py
+├── main.py
+├── config.py
+│
+├── agent/
+│   └── agent.py
+│
+├── tools/
+│   └── tools.py
+│
+├── llm/
+│   └── ollama_llm.py
+│
+├── memory/
+│   └── memory.py
+│
+└── templates/
+└── index.html
+
+⚙️ Requirements
+
+* Python 3.10+
+* Flask
+* Ollama (local LLM runtime)
+* Supported models: llama, gemma, mistral
+
+Install dependencies:
+
+```
+pip install flask
+```
+
+▶️ How to Run
+🔹 Start Ollama
+
+```
 ollama run llama
+```
 
-Run the agent:
+🔹 CLI Mode
+
+```
 python main.py
+```
 
 Example inputs:
+
+```
 (25*4)/5
 GCD 12 18
-TEXT_ANALYSIS
+TEXT_ANALYSIS Hello World
+```
 
-How to Run (Web UI):
-Start Ollama
-ollama run llama
+🔹 Web UI Mode
 
-Run Flask:
+```
 python app.py
+```
 
-Open:
-http://127.0.0.1:5000
+Open in browser:
+[http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-Notes:
-Ollama must be running before execution
-GitHub Pages cannot host the Flask backend
-Timeout errors usually indicate Ollama is slow or not running
+📊 Example Agent Behavior
+Input Goal:
+What day was 26-01-2024?
 
-Credits:
-The base agent architecture and prompt design were developed with the assistance of ChatGPT. The final implementation and integrations were completed and customized by me.
+Agent Flow:
+
+THINK → Choose CALENDAR tool
+ACT → Pass date to tool
+OBSERVE → Receive weekday
+FINISH → Return answer
+
+Output:
+Friday
+
+ *Extensibility & Future Work*
+
+* Add multi-step planning agents
+* Introduce confidence-based stopping
+* Add retrieval-augmented tools (RAG)
+* Integrate Intel OpenVINO inference
+* Plug-in external APIs as tools
+
+*Alignment with Intel Unnati*
+
+* Demonstrates agent reasoning architecture
+* Implements tool orchestration
+* Uses local LLM inference
+* Clean modular design
+* Supports hands-on training on AI, RAG, and tool-driven pipelines
+
+*Credits*
+
+* Initial agent prompt patterns and architectural guidance assisted by ChatGPT
+* Full implementation, integration, debugging, and customization completed by the developers team *(TriFusion)*.
+ 
+**PDF Version Ready:** This document is fully formatted for direct PDF export.
