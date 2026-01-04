@@ -1,5 +1,7 @@
+# agent/agent.py
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from llm.ollama_llm import OllamaLLM
@@ -13,6 +15,7 @@ class Agent:
         self.goal = goal
         self.llm = llm if llm else OllamaLLM()
         self.memory = memory if memory else Memory()
+        self.MAX_STEPS = MAX_STEPS
 
     def think(self) -> str:
         prompt = f"""
@@ -24,6 +27,8 @@ STRICT RULES:
 - Use ONLY the tool names listed
 - Respond in EXACT format only
 - No explanations, no extra text
+
+You may take multiple reasoning steps before finishing if required.
 
 RESPONSE FORMAT (ONLY ONE):
 
@@ -57,57 +62,57 @@ PREVIOUS OBSERVATIONS:
         # TOOL response
         for tool_name, tool_fn in TOOLS.items():
             if response.startswith(f"ACTION: {tool_name}"):
-                # Extract input if exists, some tools do not require INPUT
                 tool_input = ""
                 if "INPUT:" in response:
                     tool_input = response.split("INPUT:", 1)[-1].strip()
 
                 try:
-                    # If the tool requires no input, call without argument
                     if tool_input or tool_name not in ["RANDOM_FACT", "RANDOM_JOKE", "CURRENT_TIME"]:
                         result = tool_fn(tool_input)
                     else:
                         result = tool_fn()
                 except Exception as e:
-                    result = f"ACTION: FINISH ANSWER: Tool error: {e}"
+                    result = f"Tool error: {e}"
 
-                # Parse tool output to extract answer
+                # Normalize result
                 if "ACTION: FINISH ANSWER:" in result:
-                    answer = result.split("ACTION: FINISH ANSWER:", 1)[-1].strip()
-                else:
-                    answer = result.strip()
+                    result = result.split("ACTION: FINISH ANSWER:", 1)[-1].strip()
 
-                # Store observation
-                self.memory.add(f"{tool_name}({tool_input}) → {answer}")
-                return "FINISH", answer
+                # Save observation
+                self.memory.add(f"{tool_name}({tool_input}) → {result}")
+
+                return "FINISH", result
 
         # Invalid response
         self.memory.add(f"Invalid response from model:\n{response}")
         return "ERROR", f"Invalid agent response:\n{response}"
 
     def run(self):
-        print("\n🤖 Agent started\n")
         final_result = None
+        trace = []
 
-        for step in range(1, MAX_STEPS + 1):
-            print(f"--- Step {step} ---")
+        for step in range(1, self.MAX_STEPS + 1):
+            # THINK
             response = self.think()
-            print(response)
 
+            # ACT + OBSERVE
             action, result = self.parse_and_act(response)
 
-            if action == "FINISH":
-                print("\n✅ FINAL ANSWER:")
-                print(result)
-                final_result = result
-                break
-            elif action == "ERROR":
-                print("\n❌ ERROR:")
-                print(result)
+            trace.append({
+                "step": step,
+                "thought": response,
+                "action": action,
+                "result": result
+            })
+
+            if action in ["FINISH", "ERROR"]:
                 final_result = result
                 break
 
-        if not final_result:
+        if final_result is None:
             final_result = "❌ Agent stopped: max steps reached"
 
-        return final_result
+        return {
+            "final_answer": final_result,
+            "trace": trace
+        }
