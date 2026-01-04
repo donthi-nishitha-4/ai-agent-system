@@ -1,4 +1,4 @@
-AI Agent Framework – Intel Unnati Submission
+ A lightweight Python AI agent system using:
 
 📌 Overview
 This project implements a custom AI Agent Framework from scratch using Python, Flask, and a local LLM (Ollama).
@@ -147,17 +147,9 @@ Friday
 * Integrate Intel OpenVINO inference
 * Plug-in external APIs as tools
 
-*Alignment with Intel Unnati*
-
-* Demonstrates agent reasoning architecture
-* Implements tool orchestration
-* Uses local LLM inference
-* Clean modular design
-* Supports hands-on training on AI, RAG, and tool-driven pipelines
-
 *Credits*
 
 * Initial agent prompt patterns and architectural guidance assisted by ChatGPT
-* Full implementation, integration, debugging, and customization completed by the developers team *(TriFusion)*.
+* Full implementation, integration, debugging, and customization completed by the developer.
  
 **PDF Version Ready:** This document is fully formatted for direct PDF export.
