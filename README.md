@@ -1,10 +1,9 @@
- A lightweight Python AI agent system using:
+ A lightweight Python AI agent system - acts as a chatbot for utilities.
 
 📌 Overview
-This project implements a custom AI Agent Framework from scratch using Python, Flask, and a local LLM (Ollama).
-The framework demonstrates how an autonomous AI agent can interpret a goal, reason about it, invoke tools, and produce results without directly solving tasks itself.
+This project implements a custom AI Agent System from scratch using Python, Flask, and a local LLM (Ollama).
+This demonstrates how an autonomous AI agent can interpret a goal, reason about it, invoke tools, and produce results without directly solving tasks itself.
 The system follows a structured Think → Act → Finish agent loop and is designed to be extensible, explainable, and tool-driven, aligning with modern agent architectures used in industry.
-This project is developed as part of the Intel Unnati Industrial Training Program – Problem Statement #2: Build-Your-Own AI Agent Framework.
 
 🧠 Agent Architecture
 The agent operates with a controlled reasoning loop:
