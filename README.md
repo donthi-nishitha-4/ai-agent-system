@@ -22,7 +22,7 @@ Flask
 
 How to Run (CLI):
 Start Ollama
-ollama run gemma
+ollama run llama
 
 Run the agent:
 python main.py
@@ -34,7 +34,7 @@ TEXT_ANALYSIS
 
 How to Run (Web UI):
 Start Ollama
-ollama run gemma
+ollama run llama
 
 Run Flask:
 python app.py
