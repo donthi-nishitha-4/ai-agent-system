@@ -34,30 +34,63 @@ SPECIAL_DAYS = {
     "31-10": "Halloween"
 }
 
-def calendar_tool(command):
-    try:
-        command = command.lower()
-        # Special day query
-        if "special" in command:
-            match = re.search(r'(\d{1,2})[-/](\d{1,2})', command)
-            if match:
-                day, month = match.groups()
-                key = f"{int(day):02d}-{int(month):02d}"
-                output = SPECIAL_DAYS.get(key, "No special event found for this day")
-                return f"ACTION: FINISH ANSWER: {output}"
-            return "ACTION: FINISH ANSWER: Invalid special day format"
+def calendar_tool(command: str):
+    command = command.strip().lower()
 
-        # Day of week query
-        match = re.search(r'(\d{1,2})[-/](\d{1,2})[-/](\d{4})', command)
-        if match:
-            day, month, year = match.groups()
-            dt = datetime.date(int(year), int(month), int(day))
-            weekday = dt.strftime("%A")
-            return f"ACTION: FINISH ANSWER: {weekday}"
+    month_map = {
+        "january": 1, "jan": 1,
+        "february": 2, "feb": 2,
+        "march": 3, "mar": 3,
+        "april": 4, "apr": 4,
+        "may": 5,
+        "june": 6, "jun": 6,
+        "july": 7, "jul": 7,
+        "august": 8, "aug": 8,
+        "september": 9, "sep": 9,
+        "october": 10, "oct": 10,
+        "november": 11, "nov": 11,
+        "december": 12, "dec": 12
+    }
 
-        return "ACTION: FINISH ANSWER: Invalid calendar command"
-    except Exception as e:
-        return f"ACTION: FINISH ANSWER: Error: {str(e)}"
+    # ---------- DD-MM-YYYY ----------
+    m = re.search(r'(\d{1,2})[/-](\d{1,2})[/-](\d{4})', command)
+    if m:
+        d, mth, y = m.groups()
+        try:
+            dt = datetime.date(int(y), int(mth), int(d))
+            return dt.strftime("%A")
+        except:
+            return "Invalid calendar date"
+
+    # ---------- DD-MM ----------
+    m = re.search(r'(\d{1,2})[/-](\d{1,2})', command)
+    if m:
+        d, mth = m.groups()
+        key = f"{int(d):02d}-{int(mth):02d}"
+        return SPECIAL_DAYS.get(key, "No special day found on this date")
+
+    # ---------- Month + Day (natural language) ----------
+    words = re.findall(r"[a-z]+|\d+", command)
+
+    day = None
+    month = None
+
+    for w in words:
+        if w.isdigit():
+            day = int(w)
+        elif w in month_map:
+            month = month_map[w]
+
+    if month and day:
+        key = f"{day:02d}-{month:02d}"
+        return SPECIAL_DAYS.get(key, "No special day found on this date")
+
+    # ---------- Month only ----------
+    if month and not day:
+        return "Please specify a day along with the month"
+
+    return "Invalid calendar command"
+
 
 # ---------------- Unit Conversion ----------------
 def unit_conversion(command):
